@@ -4,13 +4,14 @@ This app aims to improve the efficiency for manual crack labelling.
 
 ## How to run?
 
-**1.** Firstly, make sure your Python 3 environment has installed `dearpygui`, `PIL` and `tensorflow`.
+**1.** Firstly, make sure your Python 3 environment has installed `dearpygui`, `PIL`, `numpy` and `tensorflow`.
 
 If not, you can install by using `pip`.
 
 ```shell
 pip install dearpygui
 pip install PIL
+pip install numpy
 pip install tenserflow
 ```
 
