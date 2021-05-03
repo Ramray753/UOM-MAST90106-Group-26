@@ -115,13 +115,13 @@ def show_image():
 
 if __name__ == "__main__":
     # Path constants
-    PATH = sys.argv[1]
+    PATH = sys.argv[2]
     SAVE_DIR = os.path.join(PATH, "save")
     SAVE_FILE = os.path.join(SAVE_DIR, "labels.csv")
     TEMP_DIR = os.path.join(PATH, "temp")
 
     # Number of images to label
-    label_number = int(sys.argv[2])
+    label_number = int(sys.argv[3])
     last_index = -1
 
     # Set environment variables
