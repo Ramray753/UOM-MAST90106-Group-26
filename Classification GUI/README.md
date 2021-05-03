@@ -73,7 +73,7 @@ python3 app.py /Users/root/Desktop/cracks 50
 
 The image of this pannel is shown below. 
 
-![panel](panel.png)
+<img src="panel.png" width="50%"/>
 
 ## What if I jumped over one image?
 
