@@ -1,6 +1,6 @@
 # Manual Classification GUI Guide
 
-This app aims to improve the efficiency for manual crack labeling.
+This app aims to improve the efficiency for manual crack labelling.
 
 ## How to run?
 
@@ -14,9 +14,9 @@ pip install PIL
 pip install tenserflow
 ```
 
-**2.** Then, create a new folder and move all images that need to be labled to that folder. For example, move all images to `/Users/root/Desktop/cracks`.
+**2.** Then, create a new folder and move all images that need to be labeled to that folder. For example, move all images to `/Users/root/Desktop/cracks`.
 
-**3.** Then, run in termial using the following command.
+**3.** Then, run in terminal using the following command.
 
 ```shell
 <your-python3-interpretor-path> <path-to-app.py> <full-path-to-image-folder> <number-of-cracks>
@@ -29,7 +29,7 @@ cd Classification\ GUI
 python3 app.py /Users/root/Desktop/cracks 30
 ```
 
-**4.** The parameter `<number-of-cracks>` defines how many cracks to label for current schedule. Suppse there are 100 images in total in `/Users/root/Desktop/cracks`, and you wish to label all images within 3 times (e.g.,  30, 30, 40 images for each schedule), you just need to run the following command .
+**4.** The parameter `<number-of-cracks>` defines how many cracks to label for current schedule. Suppose there are 100 images in total in `/Users/root/Desktop/cracks`, and you wish to label all images within 3 times (e.g.,  30, 30, 40 images for each schedule), you just need to run the following command .
 
 ```
 # Schedule 1
@@ -42,7 +42,7 @@ python3 app.py /Users/root/Desktop/cracks 40
 
 ## How it works?
 
-**1.** The app will save all lables in a `csv` file with name `labels.csv` in sub-folder `save`. The `csv` file has the following format.
+**1.** The app will save all labels in a `csv` file with name `labels.csv` in sub-folder `save`. The `csv` file has the following format.
 
  ```txt
  image_name,crack_1,crack_2,crack_3
@@ -63,7 +63,7 @@ python3 app.py /Users/root/Desktop/cracks 30
 python3 app.py /Users/root/Desktop/cracks 50
 ```
 
-**3.** In the app, you have 3 opearion choices.
+**3.** In the app, you have 3 operation choices.
 
 > **a.** `LOAD NEXT`: To load the image in the system, the system will split the image into 3 smaller images.
 >
@@ -71,7 +71,7 @@ python3 app.py /Users/root/Desktop/cracks 50
 >
 > **c.** Select crack type. You have to select one of the four types: `LONG`, `LAT`, `CROC` and `NONE`. Each split image need to be classified once.
 
-The image of this pannel is shown below. 
+The image of this panel is shown below. 
 
 <img src="panel.png" width="50%"/>
 
@@ -79,15 +79,15 @@ The image of this pannel is shown below.
 
 **1.** Don't worry, the system will not allow you to do so. You will have to label one image before showing the next split image and you will have to label all 3 smaller images before loading the next image. All operations violating the rules will be prevented by the system.
 
-**2.** The window title will also give you some tips for what you should do next and will show your current operation. (It is indeed annoying and will make you dizzy when labelling hunderds of images)
+**2.** The window title will also give you some tips for what you should do next and will show your current operation. (It is indeed annoying and will make you dizzy when labelling hundreds of images)
 
 ## What if I mis-labeled one image?
 
 Sorry, you can't go back and re-label. However, you can open the `labels.csv` file and re-label it anytime during the process.
 
-## What if the app crashed during the labeling process?
+## What if the app crashed during the labelling process?
 
-The system will save the result every time you click a crack botton. If app crashed during the labeling process, check if the `labels.csv` file ends with a complete entry or not. For example:
+The system will save the result every time you click a crack button. If app crashed during the labelling process, check if the `labels.csv` file ends with a complete entry or not. For example:
 
 ```txt
 # OK
