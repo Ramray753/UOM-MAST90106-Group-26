@@ -98,6 +98,6 @@ The system will save the result only when a complete line is buffered (i.e. All 
 
 ## How can I know if all images are lebeled in current schedule?
 
-If you finished labelling all of the images in the current schedule. Then panel will become as the following:
+If you finished labelling all of the images in the current schedule. Then panel will become as the following after clicking `LOAD NEXT`:
 
 <img src="end.png" width="50%"/>
