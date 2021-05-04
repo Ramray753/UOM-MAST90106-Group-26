@@ -43,39 +43,40 @@ def save_choice(sender, data):
     if not SHOW_NEXT[0]:
         core.set_main_window_title("Click 'SHOW NEXT' to show a new split image!")
         return
-    if LABELED[0]:
-        core.set_main_window_title("You should label one split image only once!")
-        return
 
-    # Write file
-    with open(SAVE_FILE, "a") as file:
-        file.write(f",{data}")
-
-    # Update environment variable
-    LABELED[0] = True
-    NUM_LABELED[0] += 1
+    # Write buffer
+    LINE[0][-1] = data
 
     # Update window title
     core.set_main_window_title(f"Input Label: {data}")
 
 def load_image():
     # Check availability
-    if NUM_LABELED[0] < 3:
+    if len(LINE[0]) < 4 or LINE[0][-1] is None:
         core.set_main_window_title("You haven't labeled all split images!")
         return
     if len(FILENAMES) == 0:
         core.set_main_window_title("★★★★★★★ ALL IMAGES ARE LABELED ★★★★★★★")
+        FILE[0].write("\n" + ",".join(LINE[0]))
+        FILE[0].close()
+        core.delete_item("Manual Image Classifier")
+        core.add_window("Manual Image Classifier", width=450, height=800, x_pos=0, y_pos=0)
+        core.add_text("All images are labeled for current schedule!")
+        core.add_text("Please close this window!")
         return
 
     # Load next image
     clear_temp_folder()
     CUR_FILENAME[0] = FILENAMES.pop(0)
     CROPPED[0] = read_image(PATH, CUR_FILENAME[0])
-    with open(SAVE_FILE, "a") as file:
-        file.write(f"\n{CUR_FILENAME[0]}")
 
     # Update environment variable
-    NUM_LABELED[0] = 0
+    if FILE[0] is not None:
+        FILE[0].write("\n" + ",".join(LINE[0]))
+        FILE[0].close()
+    FILE[0] = open(SAVE_FILE, "a")
+    LINE[0].clear()
+    LINE[0].append(CUR_FILENAME[0])
     SHOW_NEXT[0] = False
 
     # Update window title
@@ -83,15 +84,18 @@ def load_image():
 
 def show_image():
     # Check availability
-    if not LABELED[0]:
-        core.set_main_window_title("Please label this image!")
-        return
     if CROPPED[0] is None:
         core.set_main_window_title("No image is loaded! Please 'LOAD NEXT'!")
+        return
+    if LINE[0][-1] is None:
+        core.set_main_window_title("Please label this image!")
         return
     if len(CROPPED[0]) == 0:
         core.set_main_window_title("This is the last split image! Please 'LOAD NEXT'!")
         return
+
+    # Save last saved crack type to LINE buffer
+    LINE[0].append(None)
 
     # Save split image in temporary folder
     im_array = CROPPED[0].pop(0)
@@ -109,7 +113,6 @@ def show_image():
     core.set_main_window_title(f"Now labeling: {image_name}")
 
     # Update environment variable
-    LABELED[0] = False
     SHOW_NEXT[0] = True
 
 
@@ -128,10 +131,10 @@ if __name__ == "__main__":
     FILENAMES = sorted([filename for filename in os.listdir(PATH) if filename.endswith("JPG")])
     TOTAL = None
     CROPPED = [None]             # Container for each split image
-    LABELED = [True]             # Where currently split image is labeled or not
-    NUM_LABELED = [3]            # How many split image labeled for current full image
     SHOW_NEXT = [False]          # Whether the first split image is shown for current full image
     CUR_FILENAME = [None]        # Current full image file name
+    LINE = [[0, 0, 0, 0]]  # Buffer for saved labeling choices
+    FILE = [None]                # Buffer for opened csv file
 
     # Make saving folder
     clear_temp_folder()
@@ -160,7 +163,7 @@ if __name__ == "__main__":
         core.add_same_line()
         core.add_button("LAT", callback=save_choice, callback_data="lat")
         core.add_spacing(count=4)
-        core.add_separator()
+        core.add_separator(name="sep1")
         core.add_spacing(count=4)
         core.add_text("Operations: ")
         core.add_same_line()
@@ -168,7 +171,7 @@ if __name__ == "__main__":
         core.add_same_line()
         core.add_button("SHOW NEXT", callback=show_image)
         core.add_spacing(count=4)
-        core.add_separator()
+        core.add_separator(name="sep2")
         core.add_spacing(count=4)
         with open(SAVE_FILE, "r") as file:
             record = file.readlines()
@@ -188,5 +191,12 @@ if __name__ == "__main__":
         core.add_spacing(count=4)
         core.add_separator()
         core.add_spacing(count=4)
+
+    # Check if all images are labeled
+    if len(FILENAMES) == 0:
+        core.delete_item("Manual Image Classifier")
+        core.add_window("Manual Image Classifier", width=450, height=800, x_pos=0, y_pos=0)
+        core.add_text("All images are labeled in this folder!")
+        core.add_text("Please close this window!")
 
     core.start_dearpygui()

@@ -70,7 +70,7 @@ python3 app.py /Users/root/Desktop/cracks 50
 >
 > **b**. `SHOW NEXT`: To show the next smaller image. For every split image, you need to manually click this button to show it. When all the 3 smaller images haven been shown, you need to click `LOAD NEXT` to load next image.
 >
-> **c.** Select crack type. You have to select one of the four types: `LONG`, `LAT`, `CROC` and `NONE`. Each split image need to be classified once.
+> **c.** Select crack type. You have to select one of the four types: `LONG`, `LAT`, `CROC` and `NONE`. Each split image need to be classified at least once. If you clicked multiple buttons, only the last choice will be saved.
 
 The image of this panel is shown below. 
 
@@ -80,21 +80,24 @@ The image of this panel is shown below.
 
 **1.** Don't worry, the system will not allow you to do so. You will have to label one image before showing the next split image and you will have to label all 3 smaller images before loading the next image. All operations violating the rules will be prevented by the system.
 
-**2.** The window title will also give you some tips for what you should do next and will show your current operation. (It is indeed annoying and will make you dizzy when labelling hundreds of images)
+**2.** The window title will also give you some tips for what you should do next and will show your current operation. (It is indeed annoying and will you might get dizzy when labelling hundreds of images)
 
 ## What if I mis-labeled one image?
 
-Sorry, you can't go back and re-label. However, you can open the `labels.csv` file and re-label it anytime during the process.
+If you haven't clicked `SHOW NEXT`, you can click the crack type button any times you want. Only the last choice of click will be saved.
+
+If you have already clicked `SHOW NEXT`, unfortunately, you can't go back and re-label. However, you have two choices:
+
+> **1. (Recommened)** Close the app and restart. The app will continue from the latest un-labeled imaged.
+>
+> **2.** Remember on which image you made a mis-labelling. Then, you can open the `labels.csv` file **after you current schedule** and re-label it.
 
 ## What if the app crashed during the labelling process?
 
-The system will save the result every time you click a crack button. If app crashed during the labelling process, check if the `labels.csv` file ends with a complete entry or not. For example:
+The system will save the result only when a complete line is buffered (i.e. All 3 split images are lebaled). If app crashed during the labelling process, just restart the app. The app will continue from the latest un-labeled imaged.
 
-```txt
-# OK
-00001.JPG,long,lat,none
-# NOT OK
-00001.JPG,long
-```
+## How can I know if all images are lebeled in current schedule?
 
-If the last line is complete, you don't have to do anything but start you next schedule of labelling. If not, delete the last line **together with the newline `\n` character for the last second line** , then start you next schedule of labelling.
+If you finished labelling all of the images in the current schedule. Then panel will become as the following:
+
+<img src="end.png" width="50%"/>
