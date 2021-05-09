@@ -2,9 +2,17 @@
 
 This app aims to improve the efficiency for manual crack labelling.
 
+## Which app to use?
+
+`app-bi.py` is for binary classfication: `cracked` and `none`.
+
+`app.py` is for multiple classfication: `long`, `lat`, `croc` and `none`. 
+
+Although the following user guide will only explain how to use `app.py`, it is essentially the same for `app-bi.py`.
+
 ## How to run?
 
-**1.** Firstly, make sure your Python 3 environment has installed `dearpygui`, `PIL`, `numpy` and `tensorflow`.
+**1.** Firstly, make sure your Python 3 environment has installed `dearpygui`, `PIL` and `numpy`.
 
 If not, you can install by using `pip`.
 
@@ -12,7 +20,6 @@ If not, you can install by using `pip`.
 pip install dearpygui
 pip install PIL
 pip install numpy
-pip install tenserflow
 ```
 
 **2.** Then, create a new folder and move all images that need to be labeled to that folder. For example, move all images to `/Users/root/Desktop/cracks`.

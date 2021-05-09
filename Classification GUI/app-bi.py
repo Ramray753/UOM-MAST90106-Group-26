@@ -5,23 +5,22 @@ import sys
 import numpy as np
 from dearpygui import simple, core
 from PIL import Image
-from tensorflow.keras.preprocessing.image import img_to_array
-from tensorflow.keras.preprocessing.image import load_img
 
 
 def read_image(path, filename):
-    img = img_to_array(load_img(os.path.join(path, filename))).astype(int)
-    ideal_shape = (1230, 410, 3)
-    crop_bound = {
-        "xmin": int((img.shape[1] - ideal_shape[1]) / 2),
-        "xmax": int((img.shape[1] + ideal_shape[1]) / 2 - 1),
-        "ymin": int((img.shape[0] - ideal_shape[0]) / 2),
-        "ymax": int((img.shape[0] + ideal_shape[0]) / 2 - 1)
-    }
-    img_cropped = img[crop_bound["ymin"]:crop_bound["ymax"] + 1, crop_bound["xmin"]:crop_bound["xmax"] + 1]
-    y_space = np.linspace(0, ideal_shape[0], 4).astype(int)
-    y_space[-1] += 1
-    return [img_cropped[y_space[i]:y_space[i + 1], ] for i in range(len(y_space) - 1)]
+    with Image.open(os.path.join(path, filename)) as im:
+        img = np.array(im).astype(int)
+        ideal_shape = (1230, 410, 3)
+        crop_bound = {
+            "xmin": int((img.shape[1] - ideal_shape[1]) / 2),
+            "xmax": int((img.shape[1] + ideal_shape[1]) / 2 - 1),
+            "ymin": int((img.shape[0] - ideal_shape[0]) / 2),
+            "ymax": int((img.shape[0] + ideal_shape[0]) / 2 - 1)
+        }
+        img_cropped = img[crop_bound["ymin"]:crop_bound["ymax"] + 1, crop_bound["xmin"]:crop_bound["xmax"] + 1]
+        y_space = np.linspace(0, ideal_shape[0], 4).astype(int)
+        y_space[-1] += 1
+        return [img_cropped[y_space[i]:y_space[i + 1], ] for i in range(len(y_space) - 1)]
 
 def clear_temp_folder():
     if os.path.isdir(TEMP_DIR):
