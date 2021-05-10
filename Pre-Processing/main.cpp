@@ -10,8 +10,6 @@
 #include <opencv2/xfeatures2d.hpp>
 #include <opencv2/ximgproc.hpp>
 
-#include "lbplibrary.hpp"
-
 class Model_t
 {
 public:
@@ -25,7 +23,6 @@ public:
   }
   ~Model_t()
   {
-    //std::cout << filename << std::endl;
     cv::imwrite(filename, img);
   }
 
@@ -33,22 +30,6 @@ protected:
   virtual void run_model() = 0;
   cv::Mat img;
   std::filesystem::path filename;
-};
-
-template <class T_LBP>
-class LBP_Model_t : public Model_t
-{
-  static_assert(std::is_base_of<lbplibrary::LBP, T_LBP>::value, "T must inherit from list");
-
-public:
-  LBP_Model_t(const cv::Mat& img, const std::filesystem::path& filename, const std::string& tag) : Model_t(img, filename, tag) {}
-
-protected:
-  void run_model() override
-  {
-    T_LBP().run(img, img);
-    cv::normalize(img, img, 0, 255, cv::NORM_MINMAX);
-  }
 };
 
 class Null_t : public Model_t
@@ -215,7 +196,6 @@ protected:
       for (int x = 0; x < img.cols; x++)
       {
         int center_id = labels.at<int>(y + x * img.rows);
-        //img.at<float>(y, x) = 256 / (center_id + 1); //centers.at<float>(center_id);
         img.at<float>(y, x) = 256 / centers.at<float>(center_id);
       }
     }
@@ -261,19 +241,6 @@ protected:
   }
 };
 
-static cv::Ptr<cv::BackgroundSubtractor> pBackSub = cv::createBackgroundSubtractorMOG2(2, 400.0, false);
-class BackgroundSubtraction_t : public Model_t
-{
-public:
-  BackgroundSubtraction_t(const cv::Mat& img, const std::filesystem::path& filename, const std::string& tag) : Model_t(img, filename, tag) {}
-
-protected:
-  void run_model() override
-  {
-    pBackSub->apply(img, img);
-  }
-};
-
 class ConnectedComponent_t : public Model_t
 {
 public:
@@ -315,100 +282,10 @@ public:
 protected:
   void run_model() override
   {
-    {
-      int threshval = 100;
-      cv::Mat bw = threshval < 128 ? (img < threshval) : (img > threshval);
-      cv::Mat labelImage(img.size(), CV_32S);
-      int nLabels = connectedComponents(bw, labelImage, 8);
-      std::vector<cv::Vec3b> colors(nLabels);
-      colors[0] = cv::Vec3b(0, 0, 0); //background
-      for (int label = 1; label < nLabels; ++label)
-      {
-        colors[label] = cv::Vec3b((rand() & 255), (rand() & 255), (rand() & 255));
-      }
-      cv::Mat dst(img.size(), CV_8UC3);
-      for (int r = 0; r < dst.rows; ++r)
-      {
-        for (int c = 0; c < dst.cols; ++c)
-        {
-          int label = labelImage.at<int>(r, c);
-          cv::Vec3b& pixel = dst.at<cv::Vec3b>(r, c);
-          pixel = colors[label];
-        }
-      }
-      img = dst;
-      return;
-    }
-
     cv::Mat tmp;
     img *= 2;
     img &= 0xF0;
     img ^= 0xFF;
-
-    //img += tmp;
-
-    //cv::bilateralFilter(img, tmp, 9, 75, 75);
-    //img = tmp;
-    //
-    //cv::threshold(img, img, 225, 0, cv::THRESH_TRUNC);
-    double c = 255.0 / log(255.0);
-    img.forEach<uint8_t>([&](uint8_t& pixel, const int position[]) -> void {
-      pixel = c * log(pixel);
-    });
-    //cv::threshold(img, img, 200, 255, cv::THRESH_BINARY);
-    //cv::bilateralFilter(img, tmp, 9, 16, 90);
-    //img = tmp;
-    //cv::Canny(img, img, 90, 100);
-    //cv::Laplacian(img, img, CV_8UC1, 1, 1, 0, cv::BORDER_DEFAULT);
-    //cv::convertScaleAbs(img, img);
-    cv::threshold(img, img, 127, 255, cv::THRESH_BINARY);
-    //cv::threshold(img, img, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
-
-    for (int y = 1; y < img.cols - 1; y++)
-    {
-      for (int x = 1; x < img.rows - 1; x++)
-      {
-        if (img.at<uint8_t>(x - 1, y - 1) == 0 &&
-            img.at<uint8_t>(x, y - 1) == 0 &&
-            img.at<uint8_t>(x + 1, y - 1) == 0 &&
-            img.at<uint8_t>(x - 1, y) == 0 &&
-            img.at<uint8_t>(x + 1, y) == 0 &&
-            img.at<uint8_t>(x - 1, y + 1) == 0 &&
-            img.at<uint8_t>(x, y + 1) == 0 &&
-            img.at<uint8_t>(x + 1, y + 1) == 0)
-        {
-          //img.at<uint8_t>(x, y) = 0;
-        }
-      }
-    }
-
-    //cv::fastNlMeansDenoising(img, img, 5);
-    int erosion_size = 0;
-    cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT,
-                                                cv::Size(2 * erosion_size + 1, 2 * erosion_size + 1),
-                                                cv::Point(erosion_size, erosion_size));
-    //cv::erode(img, img, element);
-
-    //img.convertTo(img, CV_32F);
-    cv::Mat dst;
-    //cv::Canny(img, img, 100, 255);
-
-    // Standard Hough Line Transform
-    std::vector<cv::Vec2f> lines;                    // will hold the results of the detection
-    cv::HoughLines(dst, lines, 1, CV_PI / 360, 256); // runs the actual detection
-    // Draw the lines
-    for (size_t i = 0; i < lines.size(); i++)
-    {
-      float rho = lines[i][0], theta = lines[i][1];
-      cv::Point pt1, pt2;
-      double a = cos(theta), b = sin(theta);
-      double x0 = a * rho, y0 = b * rho;
-      pt1.x = cvRound(x0 + 1000 * (-b));
-      pt1.y = cvRound(y0 + 1000 * (a));
-      pt2.x = cvRound(x0 - 1000 * (-b));
-      pt2.y = cvRound(y0 - 1000 * (a));
-      //line(img, pt1, pt2, 0, 3, cv::LINE_AA);
-    }
   }
 };
 
@@ -417,29 +294,7 @@ void ProcessImage(const std::filesystem::path& input, const std::filesystem::pat
   cv::Mat img = cv::imread(input, cv::IMREAD_COLOR);
   assert(!img.empty());
 
-  //TEST_t(img, output, "TEST").Run();
-  //Null_t(img, output, "Null").Run();
   ConnectedComponent_t(img, output, "ConnectedComponent").Run();
-  //HIST_t(img, output, "HIST").Run();
-  //BackgroundSubtraction_t(img, output, "BackgroundSubtraction").Run();
-  //AnisotropicDiffusion_t(img, output, "AnisotropicDiffusion").Run();
-  //Kmeans_t(img, output, "Kmeans").Run();
-  //Canny_t(img, output, "Canny").Run();
-  //HistogramEqualization_t(img, output, "HistogramEqualization").Run();
-  //SIFT_t(img, output, "SIFT").Run();
-  //SURF_t(img, output, "SURF").Run();
-  //Sobel_t(img, output, "Sobel").Run();
-  //Thresholding_t(img, output, "Thresholding").Run();
-  //LBP_Model_t<lbplibrary::BGLBP>(img, output, "BGLBP").Run();
-  //LBP_Model_t<lbplibrary::CSLBP>(img, output, "CSLBP").Run();
-  //LBP_Model_t<lbplibrary::CSLDP>(img, output, "CSLDP").Run();
-  //LBP_Model_t<lbplibrary::CSSILTP>(img, output, "CSSILTP").Run();
-  //LBP_Model_t<lbplibrary::ELBP>(img, output, "ELBP").Run();
-  //LBP_Model_t<lbplibrary::OLBP>(img, output, "OLBP").Run();
-  //LBP_Model_t<lbplibrary::SCSLBP>(img, output, "SCSLBP").Run();
-  //LBP_Model_t<lbplibrary::SILTP>(img, output, "SILTP").Run();
-  //LBP_Model_t<lbplibrary::VARLBP>(img, output, "VARLBP").Run();
-  //LBP_Model_t<lbplibrary::XCSLBP>(img, output, "XCSLBP").Run();
 }
 
 int main()
@@ -453,7 +308,7 @@ int main()
     //if (i++ > 20)
     //  break;
   }
-  #pragma omp parallel
+  #pragma omp parallel for
   for (const auto& file : files)
   {
     ProcessImage(file, output / file.stem());
