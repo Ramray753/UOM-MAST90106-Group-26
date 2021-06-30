@@ -6,4 +6,7 @@ Victor Ding: `0dvictor`
 
 Xiangtian Zha: `RayZ`
 
+> * Classification GUI
+> * Supervised Learning
+
 Xiaojing Duan: `StellaD`
