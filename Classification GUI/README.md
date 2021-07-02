@@ -6,20 +6,20 @@ This app aims to improve the efficiency for manual crack labelling.
 
 `app-bi.py` is for binary classfication: `cracked` and `none`.
 
-`app.py` is for multiple classfication: `long`, `lat`, `croc` and `none`. 
+`app.py` is for multiple classfication: `long`, `lat`, `croc, `diag`, `rail` and `none`. 
 
 Although the following user guide will only explain how to use `app.py`, it is essentially the same for `app-bi.py`.
 
 ## How to run?
 
-**1.** Firstly, make sure your Python 3 environment has installed `dearpygui`, `PIL` and `numpy`.
+**1.** Firstly, make sure your Python 3 environment has installed `dearpygui`, `pillow` and `numpy`.
 
-If not, you can install by using `pip`.
+If not, you can install by using `pip` (Example command for Mac OS).
 
 ```shell
-pip install dearpygui
-pip install PIL
-pip install numpy
+sudo pip install dearpygui
+sudo pip install pillow
+sudo pip install numpy
 ```
 
 **2.** Then, create a new folder and move all images that need to be labeled to that folder. For example, move all images to `/Users/root/Desktop/cracks`.
@@ -33,7 +33,7 @@ pip install numpy
 For example,
 
 ```shell
-cd Classification\ GUI 
+cd "Classification GUI" 
 python3 app.py /Users/root/Desktop/cracks 30
 ```
 
@@ -77,7 +77,7 @@ python3 app.py /Users/root/Desktop/cracks 50
 >
 > **b**. `SHOW NEXT`: To show the next smaller image. For every split image, you need to manually click this button to show it. When all the 3 smaller images haven been shown, you need to click `LOAD NEXT` to load next image.
 >
-> **c.** Select crack type. You have to select one of the four types: `LONG`, `LAT`, `CROC` and `NONE`. Each split image need to be classified at least once. If you clicked multiple buttons, only the last choice will be saved.
+> **c.** Select crack type. You have to select one of the six types: `LONG`, `LAT`, `CROC`, `DIAG`, `RAIL`, `NONE`. Each split image need to be classified at least once. If you clicked multiple types, only the last choice will be saved.
 
 The image of this panel is shown below. 
 
