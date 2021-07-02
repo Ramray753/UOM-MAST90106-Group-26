@@ -6,7 +6,7 @@ This app aims to improve the efficiency for manual crack labelling.
 
 `app-bi.py` is for binary classfication: `cracked` and `none`.
 
-`app.py` is for multiple classfication: `long`, `lat`, `croc, `diag`, `rail` and `none`. 
+`app.py` is for multiple classfication: `long`, `lat`, `croc`, `diag`, `rail` and `none`. 
 
 Although the following user guide will only explain how to use `app.py`, it is essentially the same for `app-bi.py`.
 
