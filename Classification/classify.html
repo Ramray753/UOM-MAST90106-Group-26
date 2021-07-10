@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('input[type=radio][name=CRACK_TYPE]').on('change', function () {
+                $.ajax({
+                    url: window.location,
+                    type: 'PUT',
+                    data: $(this).val(),
+                }).fail(function (msg) {
+                    window.location.reload();
+                });
+            });
+            $(document).keyup(function (e) {
+                key = String.fromCharCode(e.which).toUpperCase();
+                if (/^[a-z0-9]+$/i.test(key)) {
+                    $("[data-hotkey='" + key + "']").each(function () {
+                        $(this).trigger('click');
+                    });
+                } else {
+                    $("[data-hotkey-code='" + e.which + "']").each(function () {
+                        $(this).trigger('click');
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            {% for (type, hotkey, checked) in selection %}
+            <div class="col d-grid gap-2">
+                <input type="radio" class="btn-check" name="CRACK_TYPE" value="{{type}}" id="radio_{{type}}"
+                    data-hotkey="{{hotkey}}" {{checked}} />
+                <label class="btn btn-outline-primary" for="radio_{{type}}">{{type}} [{{hotkey}}]</label>
+            </div>
+            {% end %}
+        </div>
+        <div class="row">
+            <div class="col d-grid gap-2">
+                <button type="button" class="btn btn-info" onclick="javascript:window.location+='/prev';"
+                    data-hotkey-code="37">Prev [&larr;]</button>
+            </div>
+            <div class="col d-grid gap-2">
+                <button type="button" class="btn btn-info" onclick="javascript:window.location+='/next';"
+                    data-hotkey-code="39">Next [&rarr;]</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <hr />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <img class="mx-auto d-block" alt="" src="{{image}}" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <hr />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col d-grid gap-2">
+                <a href="/" class="btn btn-primary">HOME</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
