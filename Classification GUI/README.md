@@ -2,6 +2,12 @@
 
 This app aims to improve the efficiency for manual crack labelling.
 
+## Update 2021-7-27
+
+* This app requires `dearpygui` of version `0.6.x`. The latest version `0.8.x` is not compatible with this app. Source code for `0.6.x` version `dearpygui` is uploaded in the folder `dearpygui`.
+
+* To speed up classifying process, pressing any key can trigger the `LOAD NEXT` and `SHOW NEXT` command in `app.py` (otherthing else not changed).
+
 ## Which app to use?
 
 `app-bi.py` is for binary classfication: `cracked` and `none`.

@@ -195,6 +195,9 @@ if __name__ == "__main__":
         core.add_spacing(count=4)
         core.add_separator()
         core.add_spacing(count=4)
+        core.set_key_press_callback(load_image)
+        core.set_key_down_callback(show_image)
+
 
     # Check if all images are labeled
     if len(FILENAMES) == 0:
