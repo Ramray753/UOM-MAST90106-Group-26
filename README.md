@@ -11,6 +11,8 @@ Xiangtian Zha: `RayZ`
 
 Xiaojing Duan: `StellaD`
 
+Yifei Zhou: `Yifei`
+
 # Online Jupyter Notebook Viewer
 Click [Here](http://54.79.169.235:50000/tree/work/HTML) for access.
 
