@@ -7,3 +7,5 @@ Victor Ding: `0dvictor`
 Xiangtian Zha: `RayZ`
 
 Xiaojing Duan: `StellaD`
+
+Yifei Zhou: `Yifei`
