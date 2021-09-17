@@ -1,12 +1,14 @@
 import os
 import numpy as np
 import pandas as pd
+import tensorflow as tf
 from matplotlib import pyplot as plt
 from sklearn.utils import shuffle
+from sklearn.metrics import f1_score
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, concatenate, add, Activation, Dense, Flatten, Dropout
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.metrics import BinaryAccuracy, Precision, TruePositives, FalseNegatives 
+from tensorflow.keras.metrics import CategoricalAccuracy, BinaryAccuracy, Precision, TruePositives, FalseNegatives 
 from tensorflow.keras.preprocessing.image import load_img, img_to_array
 
 # function for creating a vgg block
@@ -75,6 +77,12 @@ def binary_compile(model, rate, mom):
                   metrics=[BinaryAccuracy(name='binary_accuracy'), Precision(name="precision"), 
                            TruePositives(name="true_positives"), FalseNegatives(name="false_negatives")])
     
+def multiple_compile(model, rate, mom):
+    opt = SGD(learning_rate=rate, momentum=mom)
+    model.compile(optimizer=opt, 
+                  loss='categorical_crossentropy', 
+                  metrics=[CategoricalAccuracy(name='accuracy')])
+    
 # functions for saving model evaluation result
 def show_result(model, x, y=None):    
     if y is None:
@@ -85,6 +93,24 @@ def show_result(model, x, y=None):
     print("Test Accuracy: {:.2f}".format(val_acc))
     print("Test Precision: {:.2f}".format(val_pre))
     print("Test True Positive Rate: {:.2f}".format(val_TP / (val_TP + val_FN)))
+    
+def show_result_multi(model, x, y_true, y=None):    
+    if y is None:
+        val_loss, val_acc = model.evaluate(x=x, steps=len(x), verbose=0)
+    else:
+        val_loss, val_acc = model.evaluate(x=x, y=y, verbose=0)
+    y_pred = np.argmax(model.predict(x), axis=1)
+    y_true = np.argmax(y_true, axis=1)
+    f1_micro = f1_score(y_true, y_pred, average='micro')
+    f1_macro = f1_score(y_true, y_pred, average='macro')
+    f1_weighted = f1_score(y_true, y_pred, average='weighted')
+    print("Test loss: {:.2f}".format(val_loss))
+    print("Test accuracy: {:.2f}".format(val_acc))
+    print("Test f1 micro: {:.2f}".format(f1_micro))
+    print("Test f1 macro: {:.2f}".format(f1_macro))
+    print("Test f1 weighted: {:.2f}".format(f1_weighted))
+    return val_loss, val_acc, f1_micro, f1_macro, f1_weighted
+
 
 def get_avg_result(histories, start_epoch):
     avg_result = dict()
@@ -111,6 +137,11 @@ def get_percentile_result(histories, epoch):
     avg_result.index = ["Loss", "Accuracy", "Precision", "TPR"]
     return avg_result
 
+def get_final_result(results):
+    results = pd.DataFrame(results)
+    results.index = ["Loss", "Accuracy", "F1 Micro", "F1 Macro", "F1 Weighted"]
+    return results
+
 def compare_all_result(histories, filename, end=50, step=10):
     fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, dpi=100, figsize=(8,14))    
     steps = np.arange(end + 1, step=step) - 1
@@ -124,6 +155,20 @@ def compare_all_result(histories, filename, end=50, step=10):
         ax4.plot(tpr, label=model)
     for ax, title in zip([ax1, ax2, ax3, ax4], ['Cross Entropy Loss', 
                        'Classification Accuracy', 'Precision', 'True Positive Rate']):
+        ax.set_title(title)
+        ax.set_xticks(np.arange(len(steps)))
+        ax.set_xticklabels(steps + 1)
+        ax.legend(bbox_to_anchor=(1.05, 1.05))
+    fig.savefig(filename)
+    plt.show()
+    
+def compare_all_result_multi(histories, filename, end=50, step=10):
+    fig, (ax1, ax2) = plt.subplots(2, 1, dpi=100, figsize=(8,7))    
+    steps = np.arange(end + 1, step=step) - 1
+    for model in histories:
+        ax1.plot(np.asarray(histories[model]['val_loss'])[steps], label=model)
+        ax2.plot(np.asarray(histories[model]['val_accuracy'])[steps], label=model)
+    for ax, title in zip([ax1, ax2], ['Cross Entropy Loss', 'Classification Accuracy']):
         ax.set_title(title)
         ax.set_xticks(np.arange(len(steps)))
         ax.set_xticklabels(steps + 1)
@@ -159,6 +204,22 @@ def summarize_diagnostics_binary(history, filename):
     fig.savefig(filename)
     plt.show()
     
+# plot diagnostic learning curves for multi model
+def summarize_diagnostics_multi(history, filename):
+    fig, (ax1, ax2) = plt.subplots(2, 1, dpi=100, figsize=(8,7))
+    # plot loss
+    ax1.set_title('Cross Entropy Loss')
+    ax1.plot(history['loss'], color='blue', label='train')
+    ax1.plot(history['val_loss'], color='orange', label='test')
+    ax1.legend(bbox_to_anchor=(1.05, 1.05))
+    # plot accuracy
+    ax2.set_title('Classification Accuracy')
+    ax2.plot(history['accuracy'], color='blue', label='train')
+    ax2.plot(history['val_accuracy'], color='orange', label='test')
+    ax2.legend(bbox_to_anchor=(1.05, 1.05))
+    fig.savefig(filename)
+    plt.show()
+    
 # load images from dirsctory
 def _load_image_from_dir(path, label, size, color):
     image_list = sorted([file for file in os.listdir(path) if file.endswith("jpeg")])
@@ -188,6 +249,34 @@ def load_binary_dataset(src, load_size, color_mode="grayscale"):
     shuffle(image_list[1], label_list[1], random_state=100)
     return image_list[0], image_list[1], label_list[0], label_list[1]
 
+def load_multi_dataset(src, load_size, color_mode="grayscale"):
+    subdirs = ['train/', 'test/']
+    labels_dir = {
+        "long": 0,
+        "lat": 1,
+        "croc": 2,
+        "rail": 3,
+        "diag": 4
+    }
+    image_list = list()
+    label_list = list()
+    for subdir in subdirs:
+        path_to_dataset = os.path.join(src, subdir)
+        loaded_image = list()
+        loaded_label = list()
+        for crack_type in os.listdir(path_to_dataset):
+            if not crack_type.startswith("."):
+                path_to_crack_type = os.path.join(path_to_dataset, crack_type)
+                label = labels_dir[crack_type]
+                images, labels = _load_image_from_dir(path_to_crack_type, label, load_size, color_mode)
+                loaded_image.append(images)   
+                loaded_label.append(labels)   
+        image_list.append(np.concatenate(loaded_image, axis=0))
+        label_list.append(np.concatenate(loaded_label, axis=0))
+    shuffle(image_list[0], label_list[0], random_state=100)
+    shuffle(image_list[1], label_list[1], random_state=100)
+    return image_list[0], image_list[1], label_list[0], label_list[1]
+
 def save_history(histories, folder):
     new_histories = dict()
     for key in histories:
@@ -207,3 +296,53 @@ def extract_in_batch(batch_num, data, model, label, pre_func):
         temp_data = pre_func(np.concatenate((temp_data,)*3, axis=-1))
         save_list.append(model.predict(temp_data))
     return np.concatenate(save_list)
+
+def augment_data(x_train, y_train, gen_temp):
+    # generate augmented images
+    label_2_hori = gen_temp.apply_transform(x_train[(y_train == 2).flatten()], 
+                                            transform_parameters={"flip_horizontal": True})
+    label_3_hori = gen_temp.apply_transform(x_train[(y_train == 3).flatten()], 
+                                            transform_parameters={"flip_horizontal": True})
+    label_3_vert = gen_temp.apply_transform(x_train[(y_train == 3).flatten()], 
+                                            transform_parameters={"flip_vertical": True})
+    label_3_hori_vert = gen_temp.apply_transform(x_train[(y_train == 3).flatten()], 
+                                            transform_parameters={"flip_vertical": True,
+                                                                 "flip_horizontal": True})
+    label_4_hori = gen_temp.apply_transform(x_train[(y_train == 4).flatten()], 
+                                            transform_parameters={"flip_horizontal": True})
+    label_4_vert = gen_temp.apply_transform(x_train[(y_train == 4).flatten()], 
+                                            transform_parameters={"flip_vertical": True})
+    label_4_hori_vert = gen_temp.apply_transform(x_train[(y_train == 4).flatten()], 
+                                            transform_parameters={"flip_vertical": True,
+                                                                 "flip_horizontal": True})
+    # concatenate the augmented images
+    x_train_add = np.concatenate([label_2_hori, label_3_hori, label_3_vert, 
+                                  label_3_hori_vert, label_4_hori, label_4_vert, label_4_hori_vert])
+    y_train_add = np.asarray([2] * label_2_hori.shape[0] + [3] * label_3_hori.shape[0] * 3 + 
+                             [4] * label_4_hori.shape[0] * 3)
+    shuffle(x_train_add, y_train_add, random_state=100)
+    # append the augmented images to the dataset
+    x_train = np.concatenate([x_train, x_train_add])
+    y_train = np.concatenate([y_train, y_train_add.reshape((-1,1))])
+    return x_train, y_train
+
+def add_noise_data(x_train, y_train):
+    # generate noises for images
+    target_num = x_train[(y_train == 0).flatten()].shape[0]
+    shape = x_train[0].shape
+    
+    for label in [1,2,3,4]:
+        sub = x_train[(y_train == label).flatten()]
+        add_num = target_num - sub.shape[0]
+        np.random.seed(100)
+        rand_index = np.random.randint(sub.shape[0], size=add_num)
+        to_append_x = list()
+        to_append_y = [label] * add_num
+        for i in rand_index:
+            img = sub[i,:]
+            noisy_img = img + np.random.normal(0, 10, shape)
+            noisy_img_clipped = np.clip(noisy_img, 0, 255) 
+            to_append_x.append(noisy_img_clipped) 
+        x_train = np.concatenate([x_train, np.asarray(to_append_x)])
+        y_train = np.concatenate([y_train, np.asarray(to_append_y).reshape((-1,1))])   
+    return x_train, y_train
