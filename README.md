@@ -11,7 +11,9 @@ Xiangtian Zha: `RayZ`
 
 Xiaojing Duan: `StellaD`
 
-# Online Jupyter Notebook Viewer
-Click [Here](http://13.210.70.41:50000/tree/work/HTML) for access.
+Yifei Zhou: `Yifei`
 
-Token: c4813c2589cfe99eecb36feba1d70d6d75263def76a38548
+# Online Jupyter Notebook Viewer
+Click [Here](http://54.79.169.235:50000/tree/work/HTML) for access.
+
+Password: 12345
