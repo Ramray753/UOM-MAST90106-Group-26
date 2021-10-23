@@ -1,19 +1,14 @@
 # UOM-MAST90106-Group-26
 UOM Master of Data Science Industry Project - Group 26
 
-# Branches:
-Victor Ding: `0dvictor`
+# Folders
 
-Xiangtian Zha: `RayZ`
+* `Classification GUI`: an Classification GUI for mannual classification
 
-> * Classification GUI
-> * Supervised Learning
+* `Labels`: the mannual label and prediction for all images
 
-Xiaojing Duan: `StellaD`
+* `Summary`: validation and evaluation summaries for CNN models
 
-Yifei Zhou: `Yifei`
+* `Jupyter`: juputer notebook file for momdel building
 
-# Online Jupyter Notebook Viewer
-Click [Here](http://54.79.169.235:50000/tree/work/HTML) for access.
-
-Password: 12345
+* `Tutorial`: CNN tutorial
