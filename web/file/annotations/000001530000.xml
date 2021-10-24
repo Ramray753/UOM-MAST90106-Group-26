@@ -1,0 +1,26 @@
+<annotation>
+	<folder>images</folder>
+	<filename>000001530000.JPG</filename>
+	<path>E:\Work\AI\data\pavement\training\images\000001530000.JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>520</width>
+		<height>1250</height>
+		<depth>1</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>rect</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>202</xmin>
+			<ymin>974</ymin>
+			<xmax>284</xmax>
+			<ymax>1239</ymax>
+		</bndbox>
+	</object>
+</annotation>

@@ -1,0 +1,186 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppings", sans-serif;
+}
+
+
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Open Sans',sans-serif;
+    background-image: url("bb.gif");
+}
+
+.drop-zone{
+    position: relative;
+    max-width: 200px;
+    height: 200px;
+    padding: 25px;
+    right: 10%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 20px;
+    cursor: pointer;
+    color: #cccccc;
+    border: 4px dashed #009578;
+    border-radius: 10px;
+}
+
+.drop-zone--over{
+    border-style: solid;
+
+}
+.drop-zone__input{
+    display: none;
+}
+.drop-zone__thumb{
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #cccccc;
+    background-size: cover;
+    position: relative;
+}
+
+.drop-zone__thumb::after{
+    content: attr(data-label);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 5px 0;
+    color: #ffffff;
+    background: rgba(0,0,0,0.75);
+    font-size: 14px;
+    text-align: center;
+}
+
+.drop-area{
+    border: 2px dashed #fff;
+    height: 500px;
+    width: 700px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.drop-area.active{
+    border: 2px solid #fff;
+
+}
+
+.drop-area .icon{
+    font-size: 100px;
+    color: #fff;
+}
+
+
+.drag-area header{
+    font-size: 30px;
+    font-weight: 500;
+    color: #fff;
+}
+
+.drag-area span{
+    font-size: 25px;
+    font-weight: 500;
+    color: #fff;
+    margin: 10px 0 15px 0;
+}
+
+.drag-area button{
+    padding: 10px 25px;
+    font-size: 20px;
+    font-weight: 500;
+    border: none;
+    outline: none;
+    background: #fff;
+    color: #5256ad;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+h1 {
+    font-family: "Monotype Corsiva", "Apple Chancery", "URW Chancery L", cursive;
+    font-size: 2em;
+    margin: 0.67em 0;
+    color:#1b6d85;
+
+}
+h2 {
+    font-family: "Apple Chancery";
+    font-size: 2em;
+    margin: 0.67em 0;
+    color:#337ab7;
+
+}
+h3 {
+    font-family: "Apple Chancery";
+    font-size: 2em;
+    margin: 0.67em 0;
+    color:#337ab7;
+
+}
+nav{
+    position: relative;
+    margin: 20px auto 0;
+    width: 310px;
+    height: 50px;
+    background: #34495e;
+    border-radius: 8px;
+    font-size: 0;
+    box-shadow: 0 2px 3px 0 rgba(0,0,0,.1);
+}
+nav a{
+    font-size: 15px;
+    text-transform: uppercase;
+    color: white;
+    text-decoration: none;
+    line-height: 50px;
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    text-align: center;
+}
+nav .aa{
+    position: absolute;
+    height: 100%;
+    top: 0;
+    z-index: 0;
+    background: #1abc9c;
+    border-radius: 8px;
+    transition: all .5s ease 0s;
+}
+a:nth-child(1){
+    width: 100px;
+}
+nav .bb-Map,a:nth-child(1):hover~.aa{
+     width: 100px;
+    left: 0;
+}
+a:nth-child(2){
+    width: 110px;
+}
+nav .bb-Statistic,a:nth-child(2):hover~.aa{
+     width: 100px;
+    left: 100px;
+}
+a:nth-child(3){
+    width: 100px;
+}
+nav .bb-Picture,a:nth-child(3):hover~.aa{
+     width: 100px;
+    left: 210px;
+}

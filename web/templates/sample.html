@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualization of crack detection</title>
+    <link href="../static/css/style.css" rel="stylesheet" >
+</head>
+<body>
+<!--<section>-->
+<!--    <div class="bg">-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+
+<!--    </div>-->
+<!--</section>-->
+
+    <header class="header">
+        <h1>crack visualization</h1>
+    </header>
+
+
+    <nav>
+        <a href="sample.html">Map</a>
+        <a href="Dashboard.html">Statistic</a>
+        <a href="up.html">upload</a>
+        <div class="aa bb-Map"></div>
+    </nav>
+
+
+    <div>
+        <form method="GET" action = '/draw_map' enctype=multipart/form-data>
+            <button id = 'b5'>draw point map</button>
+        </form>
+        <form method="GET" action = '/show_map' enctype=multipart/form-data>
+            <button id = 'b6'>show map</button>
+        </form>
+    </div>
+    <iframe src = "map5.html"  width="60%" height="500" frameborder="0" scrolling="auto" style="position: relative; left: 20%; right:20% "></iframe>
+
+    <div>
+        <form method="GET" action = '/draw_heat_map' enctype=multipart/form-data>
+            <button id = 'b3'>draw heat map</button>
+        </form>
+        <form method="GET" action = '/show_heat_map' enctype=multipart/form-data>
+            <button id = 'b4'>show heat map</button>
+        </form>
+    </div>
+    <iframe src = "heat_map.html"  width="60%" height="500" frameborder="0" scrolling="auto" style="position: relative; left: 20%; right:20% "></iframe>
+
+
+
+
+    <div>
+        <form method="GET" action = '/draw_heat_map_style2' enctype=multipart/form-data>
+            <button id = 'b1'>draw</button>
+        </form>
+
+
+        <form method="GET" action = '/show_heat_map_style2' enctype=multipart/form-data>
+            <button id = 'b2'>show</button>
+        </form>
+    </div>
+
+
+
+    <iframe src = "heat_map_style2.html"  width="60%" height="500" frameborder="0" scrolling="auto" style="position: relative; left: 20%; right:20% "></iframe>
+    <script>
+        const button = document.querySelectorAll('button');
+        button.forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                let x = e.clientX - e.target.offsetLeft;
+                let y = e.clientY - e.target.offsetTop;
+                let ripples = document.createElement('span');
+                ripples.style.left = x + 'px';
+                ripples.style.top = y + 'px';
+                this.appendChild(ripples);
+                setTimeout(() => {
+                    ripples.remove()
+                }, 1000);
+            })
+        })
+
+    </script>
+
+</body>
+</html>
