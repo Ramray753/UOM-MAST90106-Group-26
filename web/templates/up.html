@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="en">
+    <title>Visualization of crack detection</title>
+    <link href="../static/css/style2.css" rel="stylesheet" >
+</head>
+<body>
+<!--<section>-->
+<!--    <div class="bg">-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+<!--        <span></span>-->
+
+<!--    </div>-->
+<!--</section>-->
+
+    <header class="header">
+        <h1>crack visualization</h1>
+    </header>
+
+
+    <nav>
+        <a href="sample.html">Map</a>
+        <a href="Dashboard.html">Statistic</a>
+        <a href="up.html">upload</a>
+        <div class="aa bb-Map"></div>
+    </nav>
+
+
+
+    <div>
+        <h2>Please Upload Images</h2>
+        <form method="POST" action = "/upload" enctype="multipart/form-data">
+            <input type="file" name = "myImg" value="choose">
+
+            <input type = "submit" value="upload">
+        </form>
+        <h3>Please Upload .csv file named"images.csv"</h3>
+        <form method="POST" action = "/upload_ann" enctype="multipart/form-data">
+            <input type="file" name = "myImg" value="choose Img">
+            <input type = "submit" value="upload">
+        </form>
+    </div>
+    <script src="./script.js"></script>
+
+</body>
+</html>

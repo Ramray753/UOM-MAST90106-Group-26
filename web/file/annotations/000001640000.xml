@@ -1,0 +1,26 @@
+<annotation>
+	<folder>images</folder>
+	<filename>000001640000.JPG</filename>
+	<path>E:\Work\AI\data\pavement\training\images\000001640000.JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>520</width>
+		<height>1250</height>
+		<depth>1</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>croc</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>263</xmin>
+			<ymin>43</ymin>
+			<xmax>447</xmax>
+			<ymax>383</ymax>
+		</bndbox>
+	</object>
+</annotation>
