@@ -5,23 +5,22 @@ import sys
 import numpy as np
 from dearpygui import simple, core
 from PIL import Image
-from tensorflow.keras.preprocessing.image import img_to_array
-from tensorflow.keras.preprocessing.image import load_img
 
 
 def read_image(path, filename):
-    img = img_to_array(load_img(os.path.join(path, filename))).astype(int)
-    ideal_shape = (1230, 410, 3)
-    crop_bound = {
-        "xmin": int((img.shape[1] - ideal_shape[1]) / 2),
-        "xmax": int((img.shape[1] + ideal_shape[1]) / 2 - 1),
-        "ymin": int((img.shape[0] - ideal_shape[0]) / 2),
-        "ymax": int((img.shape[0] + ideal_shape[0]) / 2 - 1)
-    }
-    img_cropped = img[crop_bound["ymin"]:crop_bound["ymax"] + 1, crop_bound["xmin"]:crop_bound["xmax"] + 1]
-    y_space = np.linspace(0, ideal_shape[0], 4).astype(int)
-    y_space[-1] += 1
-    return [img_cropped[y_space[i]:y_space[i + 1], ] for i in range(len(y_space) - 1)]
+    with Image.open(os.path.join(path, filename)) as im:
+        img = np.array(im).astype(int)
+        ideal_shape = (1230, 410, 3)
+        crop_bound = {
+            "xmin": int((img.shape[1] - ideal_shape[1]) / 2),
+            "xmax": int((img.shape[1] + ideal_shape[1]) / 2 - 1),
+            "ymin": int((img.shape[0] - ideal_shape[0]) / 2),
+            "ymax": int((img.shape[0] + ideal_shape[0]) / 2 - 1)
+        }
+        img_cropped = img[crop_bound["ymin"]:crop_bound["ymax"] + 1, crop_bound["xmin"]:crop_bound["xmax"] + 1]
+        y_space = np.linspace(0, ideal_shape[0], 4).astype(int)
+        y_space[-1] += 1
+        return [img_cropped[y_space[i]:y_space[i + 1], ] for i in range(len(y_space) - 1)]
 
 def clear_temp_folder():
     if os.path.isdir(TEMP_DIR):
@@ -160,8 +159,13 @@ if __name__ == "__main__":
         core.add_button("CROC", callback=save_choice, callback_data="croc")
         core.add_same_line()
         core.add_button("LONG", callback=save_choice, callback_data="long")
+        core.add_text("            ")
         core.add_same_line()
         core.add_button("LAT", callback=save_choice, callback_data="lat")
+        core.add_same_line()
+        core.add_button("DIAG", callback=save_choice, callback_data="diag")
+        core.add_same_line()
+        core.add_button("RAIL", callback=save_choice, callback_data="RAIl")
         core.add_spacing(count=4)
         core.add_separator(name="sep1")
         core.add_spacing(count=4)
@@ -191,6 +195,9 @@ if __name__ == "__main__":
         core.add_spacing(count=4)
         core.add_separator()
         core.add_spacing(count=4)
+        core.set_key_press_callback(load_image)
+        core.set_key_down_callback(show_image)
+
 
     # Check if all images are labeled
     if len(FILENAMES) == 0:
